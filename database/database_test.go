@@ -14,10 +14,10 @@ func TestVersion(t *testing.T) {
 	filename := "test.db"
 
 	assert.Nil(db.Open(filename))
-	assert.Nil(db.GetVersion())
-	assert.Equal(db.Version, 0)
-	assert.Nil(db.SetVersion(2))
-	assert.Equal(db.Version, 2)
+	assert.Nil(db.getVersion())
+	assert.Equal(db.version, 0)
+	assert.Nil(db.setVersion(2))
+	assert.Equal(db.version, 2)
 
 	os.Remove(filename)
 }
