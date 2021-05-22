@@ -10,13 +10,14 @@ import (
 )
 
 type Database struct {
-	db      *sql.DB
-	version int
+	db       *sql.DB
+	fileName string
+	version  int
 }
 
 func (db *Database) Open(fileName string) error {
 	sqldb, err := sql.Open("sqlite3", fileName)
-	db.db = sqldb
+	db.db, db.fileName = sqldb, fileName
 	return errors.Wrap(err, "Fail to open db")
 }
 
@@ -46,4 +47,23 @@ func (db *Database) setVersion(version int) error {
 	query := fmt.Sprintf("PRAGMA user_version = %d", version)
 	_, err := db.db.Exec(query)
 	return errors.Wrapf(err, "Fail to set PRAGMA user_version as %d", version)
+}
+
+func (db *Database) migrateTo(version int) error {
+	migration := migrationSequence[version]
+	if err := migration(db.db); err != nil {
+		return errors.Wrapf(err, "Fail to migrate to version %d", version)
+	}
+	return db.setVersion(version + 1)
+}
+
+func (db *Database) Migrate() error {
+	currentVersion := db.version
+	targetVersion := len(migrationSequence)
+	fmt.Println(currentVersion, targetVersion)
+	var err error = nil
+	for v := currentVersion; v < targetVersion && err == nil; v++ {
+		err = db.migrateTo(v)
+	}
+	return err
 }
