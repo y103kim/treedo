@@ -1,9 +1,14 @@
 package main
 
 import (
-	"github.com/y103kim/treedo/cmd"
+	"fmt"
+
+	"github.com/y103kim/treedo/database"
 )
 
 func main() {
-	cmd.Execute()
+	database := &database.Database{}
+	if err := database.Open(); err != nil {
+		fmt.Println(err)
+	}
 }
