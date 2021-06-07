@@ -24,6 +24,19 @@ func migrationV1(db *sql.DB) error {
 		return errors.Wrap(err, "Cannot create todo table")
 	}
 
+	createDateTable := `
+		CREATE TABLE date (
+		  id    INTEGER                        PRIMEARY KEY,
+		  date  TEXT CHECK(LENGTH(date) <= 10) NOT NULL DEFAULT (date('now')),
+		  node  INTEGER                        NOT NULL,
+
+		  FOREIGN KEY(date) REFERENCES todo (id) ON DELETE CASCADE
+		  UNIQUE(date, node)
+		)`
+	if _, err := db.Exec(createDateTable); err != nil {
+		return errors.Wrap(err, "Cannot create Date table")
+	}
+
 	createUpdateTrigger := `
 		CREATE TRIGGER todo_updated_time UPDATE ON todo FOR EACH ROW
 			BEGIN
