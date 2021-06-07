@@ -9,6 +9,7 @@ import (
 
 func setup(t *testing.T) *Database {
 	db := &Database{}
+	os.Remove("test.db")
 	db.Open("test.db")
 	return db
 }
@@ -36,7 +37,7 @@ func TestMigrate(t *testing.T) {
 
 	// First migration 0 => 1
 	assert.Nil(db.Migrate())
-	// First migration 1 => 1
+	// Second migration 1 => 1
 	assert.Nil(db.Migrate())
 
 	teardown(t, db)

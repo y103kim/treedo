@@ -46,13 +46,13 @@ func (db *Database) setVersion(version int) error {
 	db.version = version
 	query := fmt.Sprintf("PRAGMA user_version = %d", version)
 	_, err := db.db.Exec(query)
-	return errors.Wrapf(err, "Fail to set PRAGMA user_version as %d", version)
+	return errors.Wrapf(err, "Fail to set PRAGMA user_version as %d", version+1)
 }
 
 func (db *Database) migrateTo(version int) error {
 	migration := migrationSequence[version]
 	if err := migration(db.db); err != nil {
-		return errors.Wrapf(err, "Fail to migrate to version %d", version)
+		return errors.Wrapf(err, "Fail to migrate to version %d", version+1)
 	}
 	return db.setVersion(version + 1)
 }
