@@ -3,7 +3,7 @@ package tree
 import "time"
 
 type Node struct {
-	id         int
+	id         int64
 	title      string
 	status     string
 	hidden     bool
