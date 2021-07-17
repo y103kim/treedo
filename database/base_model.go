@@ -2,6 +2,7 @@ package database
 
 import (
 	"database/sql"
+	"fmt"
 
 	"github.com/pkg/errors"
 )
@@ -20,9 +21,10 @@ func (db *Database) Insert(obj BaseModel) error {
 	fields := obj.GetFieldNames()
 	values := obj.GetValueList()
 	return db.Tx(func(tx *sql.Tx) error {
-		r, err := tx.Exec("INSERT INTO ? (?) VALUES (?)", table, fields, values)
+		cmd := fmt.Sprintf("INSERT INTO %s (%s) VALUES (%s)", table, fields, values)
+		r, err := tx.Exec(cmd)
 		if err != nil {
-			return errors.Wrapf(err, "Cannot insert object %v", obj)
+			return errors.Wrapf(err, "Error while exec SQL\n%s\n", cmd)
 		}
 		id, _ := r.LastInsertId()
 		obj.SetId(id)

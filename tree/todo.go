@@ -31,7 +31,7 @@ func (todo *Todo) GetValueList() string {
 	if todo.hidden {
 		hiddenInt = 1
 	}
-	return fmt.Sprintf("%s, %s, %d", todo.title, todo.status, hiddenInt)
+	return fmt.Sprintf("'%s', '%s', '%d'", todo.title, todo.status, hiddenInt)
 }
 
 func (todo *Todo) GetUpdateList(fields []string) string {
