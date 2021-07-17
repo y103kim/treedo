@@ -10,8 +10,8 @@ type Todo struct {
 	title      string
 	status     string
 	hidden     bool
-	created_at time.Time
-	updated_at time.Time
+	created_at int64
+	updated_at int64
 }
 
 func (todo *Todo) SetId(id int64) {
@@ -23,7 +23,7 @@ func (todo *Todo) GetTableName() string {
 }
 
 func (todo *Todo) GetFieldNames() string {
-	return "title, status, hidden"
+	return "title, status, hidden, created_at, updated_at"
 }
 
 func (todo *Todo) GetValueList() string {
@@ -31,7 +31,12 @@ func (todo *Todo) GetValueList() string {
 	if todo.hidden {
 		hiddenInt = 1
 	}
-	return fmt.Sprintf("'%s', '%s', '%d'", todo.title, todo.status, hiddenInt)
+	return fmt.Sprintf("'%s', '%s', %d, %d, %d",
+		todo.title,
+		todo.status,
+		hiddenInt,
+		todo.created_at,
+		todo.updated_at)
 }
 
 func (todo *Todo) GetUpdateList(fields []string) string {
@@ -45,12 +50,13 @@ func (todo *Todo) Deserialize(db_output string) error {
 }
 
 func CreateTodo(title string) *Todo {
+	now := time.Now().Unix()
 	return &Todo{
 		id:         -1,
 		title:      title,
 		status:     "Not Started",
 		hidden:     false,
-		created_at: time.Now(),
-		updated_at: time.Now(),
+		created_at: now,
+		updated_at: now,
 	}
 }

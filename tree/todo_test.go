@@ -27,6 +27,7 @@ func TestCRUD(t *testing.T) {
 
 	node := CreateTodo("Test Todo")
 	assert.Nil(db.Insert(node))
+	assert.Equal(node.id, int64(1))
 
 	teardown(t, db)
 }
