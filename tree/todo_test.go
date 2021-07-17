@@ -27,7 +27,15 @@ func TestCRUD(t *testing.T) {
 
 	node := CreateTodo("Test Todo")
 	assert.Nil(db.Insert(node))
-	assert.Equal(node.id, int64(1))
+	assert.Equal(int64(1), node.id)
+
+	copied := &Todo{}
+	db.Read(copied, 1)
+	assert.Equal(int64(1), copied.id)
+	assert.Equal("Test Todo", copied.title)
+	assert.Equal("Not Started", copied.status)
+	assert.NotEqual(int64(0), copied.created_at)
+	assert.NotEqual(int64(0), copied.updated_at)
 
 	teardown(t, db)
 }
