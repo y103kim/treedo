@@ -26,12 +26,12 @@ func migrationV1(db *sql.DB) error {
 
 	createDateTable := `
 		CREATE TABLE date (
-		  date_id INTEGER                        PRIMARY KEY AUTOINCREMENT,
-		  date    TEXT CHECK(LENGTH(date) <= 10) NOT NULL,
-		  todo_id INTEGER                        NOT NULL,
+			date_id INTEGER                        PRIMARY KEY AUTOINCREMENT,
+			date    TEXT CHECK(LENGTH(date) <= 10) NOT NULL,
+			todo_id INTEGER                        NOT NULL,
 
-		  FOREIGN KEY(date) REFERENCES todo (todo_id) ON DELETE CASCADE
-		  UNIQUE(date, todo_id)
+			FOREIGN KEY(date) REFERENCES todo (todo_id) ON DELETE CASCADE
+			UNIQUE(date, todo_id)
 		)`
 	if _, err := db.Exec(createDateTable); err != nil {
 		return errors.Wrap(err, "Cannot create Date table")
@@ -48,18 +48,18 @@ func migrationV1(db *sql.DB) error {
 
 	createEdgeTable := `
 		CREATE TABLE edge (
-		  edge_id INTEGER PRIMARY KEY AUTOINCREMENT,
-		  head    INTEGER NOT NULL,
-		  tail    INTEGER NOT NULL,
-		  root    INTEGER NOT NULL,
+			edge_id INTEGER PRIMARY KEY AUTOINCREMENT,
+			head    INTEGER NOT NULL,
+			tail    INTEGER NOT NULL,
+			root    INTEGER NOT NULL,
 
-		  FOREIGN KEY(head) REFERENCES todo (todo_id) ON DELETE CASCADE
-		  FOREIGN KEY(tail) REFERENCES todo (todo_id) ON DELETE CASCADE
-		  FOREIGN KEY(root) REFERENCES todo (todo_id) ON DELETE CASCADE
+			FOREIGN KEY(head) REFERENCES todo (todo_id) ON DELETE CASCADE
+			FOREIGN KEY(tail) REFERENCES todo (todo_id) ON DELETE CASCADE
+			FOREIGN KEY(root) REFERENCES todo (todo_id) ON DELETE CASCADE
 
-		  CHECK(head != tail)
-		  UNIQUE(head, tail)
-		  UNIQUE(root, tail)
+			CHECK(head != tail)
+			UNIQUE(head, tail)
+			UNIQUE(root, tail)
 		)`
 	if _, err := db.Exec(createEdgeTable); err != nil {
 		return errors.Wrap(err, "Cannot create edge table")
