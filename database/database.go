@@ -60,10 +60,13 @@ func (db *Database) migrateTo(version int) error {
 func (db *Database) Migrate() error {
 	currentVersion := db.version
 	targetVersion := len(migrationSequence)
-	fmt.Println(currentVersion, targetVersion)
 	var err error = nil
 	for v := currentVersion; v < targetVersion && err == nil; v++ {
 		err = db.migrateTo(v)
 	}
 	return err
+}
+
+func (db *Database) Close() {
+	db.db.Close()
 }
