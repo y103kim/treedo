@@ -1,8 +1,11 @@
 package tree
 
 import (
+	"database/sql"
 	"fmt"
 	"time"
+
+	"github.com/pkg/errors"
 )
 
 type Todo struct {
@@ -26,6 +29,10 @@ func (todo *Todo) GetFieldNames() string {
 	return "title, status, hidden, created_at, updated_at"
 }
 
+func (todo *Todo) GetPkFieldName() string {
+	return "todo_id"
+}
+
 func (todo *Todo) GetValueList() string {
 	hiddenInt := 0
 	if todo.hidden {
@@ -44,8 +51,17 @@ func (todo *Todo) GetUpdateList(fields []string) string {
 	return ""
 }
 
-func (todo *Todo) Deserialize(db_output string) error {
-	// TEMP
+func (todo *Todo) Deserialize(row *sql.Row) error {
+	err := row.Scan(
+		&todo.id,
+		&todo.title,
+		&todo.status,
+		&todo.hidden,
+		&todo.created_at,
+		&todo.updated_at)
+	if err != nil {
+		return errors.Wrapf(err, "Error while scanning row:")
+	}
 	return nil
 }
 
