@@ -15,8 +15,8 @@ func setup(t *testing.T) *Database {
 }
 
 func teardown(t *testing.T, db *Database) {
-	db.db.Close()
-	os.Remove(db.fileName)
+	db.Close()
+	os.Remove("test.db")
 }
 
 func TestVersion(t *testing.T) {
