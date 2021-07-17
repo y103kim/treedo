@@ -44,7 +44,7 @@ func (todo *Todo) Deserialize(db_output string) error {
 	return nil
 }
 
-func Create(title string) *Todo {
+func CreateTodo(title string) *Todo {
 	return &Todo{
 		id:         -1,
 		title:      title,
