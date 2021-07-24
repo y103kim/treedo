@@ -5,18 +5,19 @@ import (
 	"database/sql"
 	"fmt"
 
+	"github.com/jmoiron/sqlx"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/pkg/errors"
 )
 
 type Database struct {
-	db       *sql.DB
+	db       *sqlx.DB
 	fileName string
 	version  int
 }
 
 func (db *Database) Open(fileName string) error {
-	sqldb, err := sql.Open("sqlite3", fileName)
+	sqldb, err := sqlx.Open("sqlite3", fileName)
 	db.db, db.fileName = sqldb, fileName
 	return errors.Wrap(err, "Fail to open db")
 }

@@ -1,16 +1,15 @@
 package database
 
 import (
-	"database/sql"
-
+	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
 )
 
-var migrationSequence = []func(*sql.DB) error{
+var migrationSequence = []func(*sqlx.DB) error{
 	migrationV1,
 }
 
-func migrationV1(db *sql.DB) error {
+func migrationV1(db *sqlx.DB) error {
 	createTodoTable := `
 		CREATE TABLE todo (
 			todo_id     INTEGER                           PRIMARY KEY AUTOINCREMENT,
