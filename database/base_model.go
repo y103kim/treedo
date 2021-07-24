@@ -14,7 +14,6 @@ type BaseModel interface {
 	GetValueList() string
 	GetPkFieldName() string
 	GetUpdateList(fields []string) string
-	Deserialize(row *sql.Row) error
 }
 
 func (db *Database) Insert(obj BaseModel) error {
@@ -33,16 +32,9 @@ func (db *Database) Insert(obj BaseModel) error {
 	})
 }
 
-func (db *Database) Read(obj BaseModel, id int64) error {
+func (db *Database) Get(obj BaseModel, id int64) error {
 	table := obj.GetTableName()
 	pk_name := obj.GetPkFieldName()
-	return db.Tx(func(tx *sql.Tx) error {
-		cmd := fmt.Sprintf("SELECT * FROM %s WHERE %s=%d", table, pk_name, id)
-		row := tx.QueryRow(cmd)
-		err := obj.Deserialize(row)
-		if err != nil {
-			return errors.Wrapf(err, "Error while read SQL:\n%s\n", cmd)
-		}
-		return nil
-	})
+	cmd := fmt.Sprintf("SELECT * FROM %s WHERE %s=%d", table, pk_name, id)
+	return errors.Wrapf(db.db.Get(obj, cmd), "Error whlie select\n%s\n", cmd)
 }

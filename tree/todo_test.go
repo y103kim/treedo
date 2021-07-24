@@ -27,15 +27,15 @@ func TestCRUD(t *testing.T) {
 
 	node := CreateTodo("Test Todo")
 	assert.Nil(db.Insert(node))
-	assert.Equal(int64(1), node.id)
+	assert.Equal(int64(1), node.Id)
 
 	copied := &Todo{}
-	db.Read(copied, 1)
-	assert.Equal(int64(1), copied.id)
-	assert.Equal("Test Todo", copied.title)
-	assert.Equal("Not Started", copied.status)
-	assert.NotEqual(int64(0), copied.created_at)
-	assert.NotEqual(int64(0), copied.updated_at)
+	db.Get(copied, 1)
+	assert.Equal(int64(1), copied.Id)
+	assert.Equal("Test Todo", copied.Title)
+	assert.Equal("Not Started", copied.Status)
+	assert.NotEqual(int64(0), copied.CreatedAt)
+	assert.NotEqual(int64(0), copied.UpdatedAt)
 
 	teardown(t, db)
 }
