@@ -7,7 +7,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-type BaseModel interface {
+type Mapper interface {
 	SetId(id int64)
 	GetTableName() string
 	GetFieldNames() string
@@ -16,7 +16,7 @@ type BaseModel interface {
 	GetUpdateList(fields []string) string
 }
 
-func (db *Database) Insert(obj BaseModel) error {
+func (db *Database) Insert(obj Mapper) error {
 	table := obj.GetTableName()
 	fields := obj.GetFieldNames()
 	values := obj.GetValueList()
@@ -32,7 +32,7 @@ func (db *Database) Insert(obj BaseModel) error {
 	})
 }
 
-func (db *Database) Get(obj BaseModel, id int64) error {
+func (db *Database) Get(obj Mapper, id int64) error {
 	table := obj.GetTableName()
 	pk_name := obj.GetPkFieldName()
 	cmd := fmt.Sprintf("SELECT * FROM %s WHERE %s=%d", table, pk_name, id)
