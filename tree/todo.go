@@ -1,7 +1,6 @@
 package tree
 
 import (
-	"fmt"
 	"time"
 )
 
@@ -18,34 +17,12 @@ func (todo *Todo) SetId(id int64) {
 	todo.Id = id
 }
 
-func (todo *Todo) GetTableName() string {
+func (todo *Todo) TableName() string {
 	return "todo"
 }
 
-func (todo *Todo) GetFieldNames() string {
-	return "title, status, hidden, created_at, updated_at"
-}
-
-func (todo *Todo) GetPkFieldName() string {
+func (todo *Todo) IdFieldName() string {
 	return "todo_id"
-}
-
-func (todo *Todo) GetValueList() string {
-	hiddenInt := 0
-	if todo.Hidden {
-		hiddenInt = 1
-	}
-	return fmt.Sprintf("'%s', '%s', %d, %d, %d",
-		todo.Title,
-		todo.Status,
-		hiddenInt,
-		todo.CreatedAt,
-		todo.UpdatedAt)
-}
-
-func (todo *Todo) GetUpdateList(fields []string) string {
-	// TEMP
-	return ""
 }
 
 func CreateTodo(title string) *Todo {
