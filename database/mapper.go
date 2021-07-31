@@ -1,9 +1,11 @@
 package database
 
 import (
-	"database/sql"
 	"fmt"
+	"reflect"
+	"strings"
 
+	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
 )
 
@@ -14,12 +16,26 @@ type Mapper interface {
 }
 
 func (db *Database) Insert(obj Mapper) error {
-	table := obj.GetTableName()
-	fields := obj.GetFieldNames()
-	values := obj.GetValueList()
-	return db.Tx(func(tx *sql.Tx) error {
-		cmd := fmt.Sprintf("INSERT INTO %s (%s) VALUES (%s)", table, fields, values)
-		r, err := tx.Exec(cmd)
+	table := obj.TableName()
+	obj_type := reflect.TypeOf(obj).Elem()
+	field_names := make([]string, 0)
+	value_mappings := make([]string, 0)
+	for i := 0; i < obj_type.NumField(); i++ {
+		field := obj_type.Field(i)
+		tag := field.Tag.Get("db")
+		if tag != obj.IdFieldName() {
+			field_names = append(field_names, tag)
+			value_mappings = append(value_mappings, ":"+tag)
+		}
+	}
+	cmd := fmt.Sprintf(
+		"INSERT INTO %s (%s) VALUES (%s)",
+		table,
+		strings.Join(field_names, ","),
+		strings.Join(value_mappings, ","))
+
+	return db.Tx(func(tx *sqlx.Tx) error {
+		r, err := tx.NamedExec(cmd, obj)
 		if err != nil {
 			return errors.Wrapf(err, "Error while exec SQL\n%s\n", cmd)
 		}
