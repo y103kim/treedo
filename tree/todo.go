@@ -8,7 +8,7 @@ type Todo struct {
 	Id        int64  `db:"todo_id"`
 	Title     string `db:"title"`
 	Status    string `db:"status"`
-	Hidden    bool   `db:"hidden"`
+	Hidden    int64  `db:"hidden"`
 	CreatedAt int64  `db:"created_at"`
 	UpdatedAt int64  `db:"updated_at"`
 }
@@ -31,7 +31,7 @@ func CreateTodo(title string) *Todo {
 		Id:        -1,
 		Title:     title,
 		Status:    "Not Started",
-		Hidden:    false,
+		Hidden:    0,
 		CreatedAt: now,
 		UpdatedAt: now,
 	}

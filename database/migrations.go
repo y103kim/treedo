@@ -15,7 +15,7 @@ func migrationV1(db *sqlx.DB) error {
 			todo_id     INTEGER                           PRIMARY KEY AUTOINCREMENT,
 			title       TEXT CHECK(LENGTH(title) <= 100)  NOT NULL,
 			status      TEXT CHECK(LENGTH(status) <= 20)  NOT NULL DEFAULT "Not Started",
-			hidden      BOOLEAN                           NOT NULL DEFAULT 0,
+			hidden      INTEGER                           NOT NULL DEFAULT 0,
 			created_at  INTEGER                           NOT NULL DEFAULT 0,
 			updated_at  INTEGER                           NOT NULL DEFAULT 0
 		)`
