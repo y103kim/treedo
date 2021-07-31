@@ -52,3 +52,31 @@ func (db *Database) Get(mapper Mapper, id int64) error {
 	cmd := fmt.Sprintf("SELECT * FROM %s WHERE %s=%d", table, pk_name, id)
 	return errors.Wrapf(db.db.Get(mapper, cmd), "Error whlie select\n%s\n", cmd)
 }
+
+func (db *Database) Update(mapper Mapper, names []string) error {
+	mapper_value := reflect.ValueOf(mapper).Elem()
+	assigns := make([]string, 0)
+	table := mapper.TableName()
+	pk_name := mapper.IdFieldName()
+	for _, name := range names {
+		field_type, ok := mapper_value.Type().FieldByName(name)
+		if ok {
+			val := mapper_value.FieldByName(name).Interface()
+			assign := fmt.Sprint(field_type.Tag.Get("db"), "='", val, "'")
+			assigns = append(assigns, assign)
+		}
+	}
+
+	cmd := fmt.Sprintf(
+		"UPDATE %s SET %s WHERE %s=%d",
+		table,
+		strings.Join(assigns, ","),
+		pk_name,
+		mapper.GetId(),
+	)
+
+	return db.Tx(func(tx *sqlx.Tx) error {
+		_, err := tx.Exec(cmd)
+		return errors.Wrapf(err, "Error while update SQL\n%s\n", cmd)
+	})
+}

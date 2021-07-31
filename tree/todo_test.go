@@ -37,5 +37,19 @@ func TestCRUD(t *testing.T) {
 	assert.NotEqual(int64(0), copied.CreatedAt)
 	assert.NotEqual(int64(0), copied.UpdatedAt)
 
+	copied.Title = "Updated Title"
+	copied.Status = "Updated Status"
+	copied.Hidden = 1
+	copied.UpdatedAt += 1
+	assert.Nil(db.Update(copied, []string{"Title", "Status", "Hidden", "UpdatedAt"}))
+
+	updated := &Todo{}
+	db.Get(updated, 1)
+	assert.Equal(int64(1), copied.Id)
+	assert.Equal("Updated Title", updated.Title)
+	assert.Equal("Updated Status", updated.Status)
+	assert.Equal(int64(1), copied.Hidden)
+	assert.Equal(copied.UpdatedAt, updated.UpdatedAt)
+
 	teardown(t, db)
 }
