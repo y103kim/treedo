@@ -13,6 +13,10 @@ type Todo struct {
 	UpdatedAt int64  `db:"updated_at"`
 }
 
+func (todo *Todo) GetId() int64 {
+	return todo.Id
+}
+
 func (todo *Todo) SetId(id int64) {
 	todo.Id = id
 }

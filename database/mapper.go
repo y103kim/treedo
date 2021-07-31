@@ -11,6 +11,7 @@ import (
 
 type Mapper interface {
 	SetId(id int64)
+	GetId() int64
 	TableName() string
 	IdFieldName() string
 }
