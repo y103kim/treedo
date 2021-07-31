@@ -1,8 +1,6 @@
 package database
 
 import (
-	"context"
-	"database/sql"
 	"fmt"
 
 	"github.com/jmoiron/sqlx"
@@ -22,11 +20,10 @@ func (db *Database) Open(fileName string) error {
 	return errors.Wrap(err, "Fail to open db")
 }
 
-type TxCb func(*sql.Tx) error
+type TxCb func(*sqlx.Tx) error
 
 func (db *Database) Tx(cb TxCb) error {
-	ctx := context.TODO()
-	tx, err := db.db.BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelReadCommitted})
+	tx, err := db.db.Beginx()
 	if err != nil {
 		return errors.Wrap(err, "Cannot begin transction")
 	}
