@@ -3,6 +3,7 @@ package database
 import (
 	"context"
 	"fmt"
+	"log"
 
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/pkg/errors"
@@ -16,12 +17,15 @@ type Database struct {
 func CreateDatabase(filename string) *Database {
 	cmd := fmt.Sprintf("file:%s?cache=shared&_fk=1", filename)
 	client, err := ent.Open("sqlite3", cmd)
-	if err == nil {
-		database := &Database{client}
-		return database
-	} else {
-		panic("Cannot open or create database")
+	if err != nil {
+		log.Fatal("Cannot open or create database")
 	}
+	ctx := context.Background()
+	if err := client.Schema.Create(ctx); err != nil {
+		log.Fatalf("failed creating schema resources: %v", err)
+	}
+	database := &Database{client}
+	return database
 }
 
 func (d *Database) Close() error {
