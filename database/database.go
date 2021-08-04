@@ -1,6 +1,7 @@
 package database
 
 import (
+	"context"
 	"fmt"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -25,4 +26,25 @@ func CreateDatabase(filename string) *Database {
 
 func (d *Database) Close() error {
 	return errors.Wrap(d.client.Close(), "Cannot close database")
+}
+
+type TxCb func(ctx context.Context, tx *ent.Tx) error
+
+func rollback(tx *ent.Tx, err error) error {
+	if rerr := tx.Rollback(); rerr != nil {
+		err = fmt.Errorf("%w: %v", err, rerr)
+	}
+	return err
+}
+
+func (d *Database) Tx(fn TxCb) error {
+	ctx := context.Background()
+	tx, err := d.client.Tx(ctx)
+	if err != nil {
+		return err
+	}
+	if err := fn(ctx, tx); err != nil {
+		return rollback(tx, err)
+	}
+	return errors.Wrap(tx.Commit(), "committing transaction:")
 }
