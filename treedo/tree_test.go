@@ -30,5 +30,12 @@ func TestTransaction(t *testing.T) {
 	todo_korean, err := tree.CreateTodo("한글 테스트")
 	assert.Nil(err)
 	assert.Equal("한글 테스트", todo_korean.Title)
+
+	todos, err := tree.GetAllTodos()
+	assert.Nil(err)
+	assert.Len(todos, 2)
+	assert.Equal(todos[0].Title, todo1.Title)
+	assert.Equal(todos[1].Title, todo_korean.Title)
+
 	teardown(t, db)
 }

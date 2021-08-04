@@ -29,3 +29,16 @@ func (t *Tree) CreateTodo(title string) (*ent.Todo, error) {
 	})
 	return todo, err
 }
+
+func (t *Tree) GetAllTodos() ([]*ent.Todo, error) {
+	var todos []*ent.Todo
+	err := t.db.Tx(func(ctx context.Context, tx *ent.Tx) error {
+		if saved, err := tx.Todo.Query().All(ctx); err != nil {
+			return errors.Wrap(err, "Fail to get all todos")
+		} else {
+			todos = saved
+			return nil
+		}
+	})
+	return todos, err
+}
