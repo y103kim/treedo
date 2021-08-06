@@ -35,7 +35,21 @@ func TestTransaction(t *testing.T) {
 	assert.Nil(err)
 	assert.Len(todos, 2)
 	assert.Equal(todos[0].Title, todo1.Title)
+	assert.Equal(todos[0].ID, 1)
 	assert.Equal(todos[1].Title, todo_korean.Title)
+	assert.Equal(todos[1].ID, 2)
+
+	assert.Nil(tree.LinkTodos(1, 2))
+	children, err := tree.QueryChildren(1)
+	assert.Equal(children[0].Title, todo_korean.Title)
+	assert.Equal(children[0].ID, 2)
+
+	_, err = tree.CreateTodo("Todo 3")
+	_, err = tree.CreateTodo("Todo 4")
+	assert.Nil(tree.LinkTodos(2, 3, 4))
+	children, err = tree.QueryChildren(2)
+	assert.Equal(children[0].ID, 3)
+	assert.Equal(children[1].ID, 4)
 
 	teardown(t, db)
 }
