@@ -44,5 +44,9 @@ func TestTransaction(t *testing.T) {
 	assert.True(tree.Parents.Check(4, 2))
 	assert.False(tree.Parents.Check(4, 1))
 
+	assert.Nil(tree.CreateTodo("Todo 5"))
+	assert.Nil(tree.LinkTodos(5, 3))
+	assert.ElementsMatch([]int{2, 5}, tree.Parents.List(3))
+
 	teardown(t, db)
 }

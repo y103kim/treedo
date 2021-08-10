@@ -26,6 +26,14 @@ func (s *IntSet) Check(v int) bool {
 	return s.data[v] == true
 }
 
+func (s *IntSet) List() []int {
+	ret := make([]int, 0, len(s.data))
+	for k := range s.data {
+		ret = append(ret, k)
+	}
+	return ret
+}
+
 type IntSets struct {
 	data map[int]*IntSet
 }
@@ -58,4 +66,11 @@ func (s *IntSets) Check(key, v int) bool {
 		return set.Check(v)
 	}
 	return false
+}
+
+func (s *IntSets) List(key int) []int {
+	if set, ok := s.data[key]; ok {
+		return set.List()
+	}
+	return []int{}
 }

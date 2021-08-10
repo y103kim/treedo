@@ -19,9 +19,11 @@ func TestIntSets(t *testing.T) {
 	assert.Equal(false, s.Check(10, 3))
 	assert.Equal(false, s.Check(10, 10))
 	assert.Equal(true, s.Check(10, 8))
+	assert.ElementsMatch([]int{1, 2, 8}, s.List(10))
 
 	assert.Equal(true, s.Check(11, 1))
 	assert.Equal(false, s.Check(11, 3))
 	assert.Equal(false, s.Check(11, 10))
 	assert.Equal(true, s.Check(11, 8))
+	assert.ElementsMatch([]int{1, 2, 8}, s.List(11))
 }
