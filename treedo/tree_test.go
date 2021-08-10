@@ -31,14 +31,14 @@ func TestTransaction(t *testing.T) {
 
 	assert.Nil(tree.LinkTodos(1, 2))
 	children := tree.Nodes[1].Edges.Child
-	assert.Equal(children[0].ID, 2)
+	assert.Equal(2, children[0].ID)
 
 	assert.Nil(tree.CreateTodo("Todo 3"))
 	assert.Nil(tree.CreateTodo("Todo 4"))
 	assert.Nil(tree.LinkTodos(2, 3, 4))
 	children = tree.Nodes[2].Edges.Child
-	assert.Equal(children[0].ID, 3)
-	assert.Equal(children[1].ID, 4)
+	assert.Equal(3, children[0].ID)
+	assert.Equal(4, children[1].ID)
 
 	assert.True(tree.Parents.Check(3, 2))
 	assert.True(tree.Parents.Check(4, 2))
