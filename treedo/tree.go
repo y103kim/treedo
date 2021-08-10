@@ -6,18 +6,19 @@ import (
 	"github.com/pkg/errors"
 	"github.com/y103kim/treedo/database"
 	"github.com/y103kim/treedo/ent"
+	"github.com/y103kim/treedo/tools"
 )
 
 type Tree struct {
 	db      *database.Database
 	Nodes   map[int]*ent.Todo
-	Parents map[int][]int
+	Parents *tools.IntSets
 }
 
 func CreateTree(db *database.Database) *Tree {
 	tree := &Tree{db, nil, nil}
 	tree.Nodes = make(map[int]*ent.Todo)
-	tree.Parents = make(map[int][]int)
+	tree.Parents = tools.CreateIntSets()
 	return tree
 }
 
@@ -39,6 +40,9 @@ func (t *Tree) FetchAll() error {
 		} else {
 			for _, res := range results {
 				t.Nodes[res.ID] = res
+				for _, child := range res.Edges.Child {
+					t.Parents.Add(child.ID, res.ID)
+				}
 			}
 			return nil
 		}
@@ -52,6 +56,7 @@ func (t *Tree) LinkTodos(from int, to ...int) error {
 		} else {
 			for _, todo_id := range to {
 				res.Edges.Child = append(res.Edges.Child, t.Nodes[todo_id])
+				t.Parents.Add(todo_id, from)
 			}
 			t.Nodes[res.ID] = res
 			return nil

@@ -40,5 +40,9 @@ func TestTransaction(t *testing.T) {
 	assert.Equal(children[0].ID, 3)
 	assert.Equal(children[1].ID, 4)
 
+	assert.True(tree.Parents.Check(3, 2))
+	assert.True(tree.Parents.Check(4, 2))
+	assert.False(tree.Parents.Check(4, 1))
+
 	teardown(t, db)
 }
